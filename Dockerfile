@@ -92,7 +92,7 @@ WORKDIR "/opt"
 RUN apk add bash tar curl
 
 ## Automated Install
-RUN curl https://github.com/cmndcntrlcyber/btpi-react/raw/refs/heads/main/wazuh/wazuh.sh > /opt/btpi-nexus/install_wazuh.sh
+RUN curl https://raw.githubusercontent.com/cmndcntrlcyber/btpi-react/refs/heads/main/wazuh/install_wazuh.sh > /opt/btpi-nexus/install_wazuh.sh
 RUN bash /opt/btpi-nexus/install_wazuh.sh
 
 ## Manual Install
