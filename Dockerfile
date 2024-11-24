@@ -11,7 +11,7 @@ RUN apk add bash
 RUN apk add nano
 RUN apk add curl
 RUN apk add wget
-
+RUN mkdir /opt/btpi-nexus/
 #-------------------------------
 #Configure kubectl, helm and k3d
 #RUN curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash; exit 0
@@ -27,8 +27,8 @@ RUN apk add wget
 #-------------------------------
 # Install portainer
 WORKDIR "/opt"
-RUN apk add bash tar wget
-RUN wget https://github.com/cmndcntrlcyber/btpi-nexus/grr/install_grr.sh > /opt/btpi-nexus/install_portainer.sh
+RUN apk add bash tar curl
+RUN curl https://raw.githubusercontent.com/cmndcntrlcyber/btpi-react/refs/heads/main/grr/install_grr.sh > /opt/btpi-nexus/install_portainer.sh
 RUN bash /opt/btpi-nexus/install_portainer.sh
 
 #RUN docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:2.21.0
@@ -38,10 +38,10 @@ RUN bash /opt/btpi-nexus/install_portainer.sh
 # Set up environment for Kasm installation
 WORKDIR /tmp
 # Add necessary tools
-RUN apk add bash tar wget
+RUN apk add bash tar curl
 
 ## Automated Install
-RUN wget https://github.com/cmndcntrlcyber/btpi-nexus/kasm/install_kasm.sh > /opt/btpi-nexus/install_kasm.sh
+RUN curl https://raw.githubusercontent.com/cmndcntrlcyber/btpi-react/refs/heads/main/kasm/install_kasm.sh > /opt/btpi-nexus/install_kasm.sh
 RUN bash /opt/btpi-nexus/install_kasm.sh
 
 ## Manual Install
@@ -72,10 +72,10 @@ RUN bash /opt/btpi-nexus/install_kasm.sh
 #---------------------------------
 # Install Google Rapid Response
 WORKDIR "/opt"
-RUN apk add bash tar wget
+RUN apk add bash tar curl
 
 ## Automated Install
-RUN wget https://github.com/cmndcntrlcyber/btpi-nexus/grr/install_grr.sh > /opt/btpi-nexus/install_grr.sh
+RUN curl https://github.com/cmndcntrlcyber/btpi-nexus/grr/install_grr.sh > /opt/btpi-nexus/install_grr.sh
 RUN bash /opt/btpi-nexus/install_grr.sh
 
 ## Manual Install
@@ -83,6 +83,21 @@ RUN bash /opt/btpi-nexus/install_grr.sh
 #RUN cd grr*
 #RUN ./docker_config_files/init_certs.sh
 #RUN sed -i 's/ports:\s*-\s*"8000:8000"/ports:\n  - "8500:8000"/; s/expose:\s*-\s*"8000"/expose:\n  - "8500"/' compose.yaml
+#RUN docker compose up -d
+#-------------------------------
+
+#---------------------------------
+# Install Wazuh 
+WORKDIR "/opt"
+RUN apk add bash tar curl
+
+## Automated Install
+RUN curl https://github.com/cmndcntrlcyber/btpi-react/raw/refs/heads/main/wazuh/wazuh.sh > /opt/btpi-nexus/install_wazuh.sh
+RUN bash /opt/btpi-nexus/install_wazuh.sh
+
+## Manual Install
+#RUN git clone https://github.com/wazuh/wazuh-docker.git -b v4.9.2
+#RUN docker-compose -f generate-indexer-certs.yml run --rm generator
 #RUN docker compose up -d
 #-------------------------------
 
