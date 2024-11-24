@@ -23,7 +23,14 @@ RUN apk add wget
 #RUN curl -L https://dl.dagger.io/dagger/install.sh | sh
 #WORKDIR "/opt"
 #-------------------------------
+
+#-------------------------------
 # Install portainer
+WORKDIR "/opt"
+RUN apk add bash tar wget
+RUN wget https://github.com/cmndcntrlcyber/btpi-nexus/grr/install_grr.sh > /opt/btpi-nexus/install_portainer.sh
+RUN bash /opt/btpi-nexus/install_portainer.sh
+
 #RUN docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:2.21.0
 
 #-------------------------------
@@ -33,9 +40,11 @@ WORKDIR /tmp
 # Add necessary tools
 RUN apk add bash tar wget
 
-RUN wget https://github.com/cmndcntrlcyber/btpi-nexus/kasm/install_kasm.sh > /opt/btpi-nexus/
+## Automated Install
+RUN wget https://github.com/cmndcntrlcyber/btpi-nexus/kasm/install_kasm.sh > /opt/btpi-nexus/install_kasm.sh
 RUN bash /opt/btpi-nexus/install_kasm.sh
 
+## Manual Install
 # Download required files
 #RUN curl -fLO https://kasm-static-content.s3.amazonaws.com/kasm_release_1.15.0.06fdc8.tar.gz
 #RUN curl -fLO https://kasm-static-content.s3.amazonaws.com/kasm_release_workspace_images_amd64_1.15.0.06fdc8.tar.gz
@@ -58,9 +67,18 @@ RUN bash /opt/btpi-nexus/install_kasm.sh
 
 # Run the installation script with the necessary parameters
 #RUN echo $ACCEPT_EULA | bash -x ./kasm_release/install.sh --offline-workspaces /tmp/kasm_release_workspace_images_amd64_1.15.0.06fdc8.tar.gz --offline-service /tmp/kasm_release_service_images_amd64_1.15.0.06fdc8.tar.gz
+#---------------------------------
 
+#---------------------------------
 # Install Google Rapid Response
-#WORKDIR "/opt"
+WORKDIR "/opt"
+RUN apk add bash tar wget
+
+## Automated Install
+RUN wget https://github.com/cmndcntrlcyber/btpi-nexus/grr/install_grr.sh > /opt/btpi-nexus/install_grr.sh
+RUN bash /opt/btpi-nexus/install_grr.sh
+
+## Manual Install
 #RUN git clone https://github.com/google/grr
 #RUN cd grr*
 #RUN ./docker_config_files/init_certs.sh
