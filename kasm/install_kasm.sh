@@ -26,4 +26,4 @@ chmod +x ./kasm_release/install.sh
 ACCEPT_EULA=y
 
 # Run the installation script with the necessary parameters
-echo $ACCEPT_EULA | bash -x ./kasm_release/install.sh --offline-workspaces /tmp/kasm_release_workspace_images_amd64_1.15.0.06fdc8.tar.gz --offline-service /tmp/kasm_release_service_images_amd64_1.15.0.06fdc8.tar.gz
+echo $ACCEPT_EULA | bash -x ./kasm_release/install.sh -L 6443 --offline-workspaces /tmp/kasm_release_workspace_images_amd64_1.15.0.06fdc8.tar.gz --offline-service /tmp/kasm_release_service_images_amd64_1.15.0.06fdc8.tar.gz

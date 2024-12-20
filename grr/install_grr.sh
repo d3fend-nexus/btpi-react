@@ -1,3 +1,4 @@
+#!/bin/bash
 # Install Google Rapid Response
 cd /opt
 git clone https://github.com/google/grr
