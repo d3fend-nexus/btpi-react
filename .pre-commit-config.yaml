@@ -1,0 +1,82 @@
+# BTPI-REACT Pre-commit Configuration
+# Comprehensive security and quality checks before commits
+
+repos:
+  # Core Pre-commit Hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      # Security Checks
+      - id: detect-private-key
+        exclude: '^(services/velociraptor/config/.*\.yaml|config/server\.config\.yaml)$'
+      # AWS credentials check disabled - project does not use AWS
+      # - id: detect-aws-credentials
+      - id: check-added-large-files
+        args: ['--maxkb=10240']  # 10MB limit
+      - id: forbid-new-submodules
+
+      # File Quality Checks
+      - id: end-of-file-fixer
+        exclude: '^(archive/|\.git/|logs/|data/)'
+      - id: trailing-whitespace
+        exclude: '^(archive/|\.git/|logs/|data/)'
+      - id: mixed-line-ending
+        exclude: '^(archive/|\.git/|logs/|data/)'
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+
+      # Configuration File Validation
+      - id: check-yaml
+        exclude: '^(archive/|\.git/|logs/|data/)'
+      - id: check-json
+        exclude: '^(archive/|\.git/|root-code/|logs/|data/)'
+
+      # Merge Conflict Detection
+      - id: check-merge-conflict
+      - id: check-case-conflict
+
+  # Shell Script Security and Quality
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.10.0.1 # IP-OK - This is a version tag, not an IP address
+    hooks:
+      - id: shellcheck
+        args: ['-e', 'SC1091,SC2034,SC2153,SC2155,SC2086,SC2162,SC2002,SC2181,SC2009,SC2119,SC2120,SC2215,SC2016,SC2030,SC2031,SC2046,SC2024,SC2145,SC2124']
+        exclude: '^(archive/|\.git/|logs/|data/)'
+
+  # Environment File Protection
+  - repo: local
+    hooks:
+      - id: block-env-files
+        name: Block .env files with secrets
+        entry: bash
+        args: ['-c', 'for file in "$@"; do if [[ "$file" =~ \.env$ ]] && grep -q "PASSWORD\|SECRET\|KEY\|TOKEN" "$file" 2>/dev/null; then echo "❌ Blocked: .env file contains secrets in $file"; exit 1; fi; done', '--']
+        language: system
+        files: '\.env$'
+
+      - id: block-sensitive-files
+        name: Block sensitive files
+        entry: bash
+        args: ['-c', 'echo "❌ Blocked: Sensitive file detected"; exit 1']
+        language: system
+        files: '^(.*\.key|.*\.pem|.*\.p12|.*\.pfx|.*secrets\..*|.*credentials\..*|.*\.keystore|.*\.jks)$'
+        exclude: '^(archive/|\.git/|config/certificates/|config/nginx/|config/misp/ssl/|config/server\.key|data/|\.secrets\.baseline)'
+
+      - id: validate-deployment-scripts
+        name: Validate deployment scripts
+        entry: bash
+        args: ['-c', 'for file in "$@"; do if ! bash -n "$file"; then echo "❌ Syntax error in $file"; exit 1; fi; done', '--']
+        language: system
+        files: '^(deployment/|scripts/).*\.sh$'
+        exclude: '^(archive/|\.git/)'
+
+      - id: scan-hardcoded-ips
+        name: Scan for hardcoded IPs
+        entry: bash
+        args: ['-c', 'for file in "$@"; do if grep -n "192\.168\.\|10\.\|172\.[0-9]" "$file" 2>/dev/null | grep -v "# IP-OK\|EXAMPLE\|SERVER_IP"; then echo "❌ Hardcoded IP in $file (add # IP-OK if intentional)"; exit 1; fi; done', '--']
+        language: system
+        files: '\.(sh|yml|yaml|conf|env\.example)$'
+        exclude: '^(archive/|logs/|data/|\.git/)'
+
+# Global configuration
+fail_fast: false
+default_stages: [pre-commit]

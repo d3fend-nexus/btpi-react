@@ -1,0 +1,15 @@
+[Unit]
+Description=Docker Health Monitor Timer
+Documentation=https://github.com/d3fend-nexus/btpi-react
+Requires=docker-health-monitor.service
+
+[Timer]
+# Run every 15 minutes
+OnCalendar=*:0/15
+# Run immediately if the system was powered down when the timer should have run
+Persistent=true
+# Randomize the start time by up to 60 seconds to avoid system load spikes
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target
