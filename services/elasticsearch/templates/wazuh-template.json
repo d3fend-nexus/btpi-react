@@ -1,0 +1,52 @@
+{
+  "index_patterns": ["wazuh-alerts*"],
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 0,
+    "refresh_interval": "5s"
+  },
+  "mappings": {
+    "properties": {
+      "@timestamp": {
+        "type": "date"
+      },
+      "agent": {
+        "properties": {
+          "id": {"type": "keyword"},
+          "name": {"type": "keyword"},
+          "ip": {"type": "ip"}
+        }
+      },
+      "rule": {
+        "properties": {
+          "id": {"type": "keyword"},
+          "level": {"type": "integer"},
+          "description": {"type": "text"},
+          "groups": {"type": "keyword"},
+          "mitre": {
+            "properties": {
+              "id": {"type": "keyword"},
+              "tactic": {"type": "keyword"},
+              "technique": {"type": "keyword"}
+            }
+          }
+        }
+      },
+      "location": {"type": "keyword"},
+      "decoder": {
+        "properties": {
+          "name": {"type": "keyword"}
+        }
+      },
+      "data": {
+        "properties": {
+          "srcip": {"type": "ip"},
+          "dstip": {"type": "ip"},
+          "srcport": {"type": "integer"},
+          "dstport": {"type": "integer"},
+          "protocol": {"type": "keyword"}
+        }
+      }
+    }
+  }
+}

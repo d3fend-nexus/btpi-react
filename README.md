@@ -32,18 +32,18 @@ BTPI-REACT (Blue Team Portable Infrastructure - Rapid Emergency Analysis & Count
 - **Automated dependency management** and health checking
 
 ### 🔧 **Comprehensive Tool Stack**
-- **TheHive 5.x** - Security Incident Response Platform (SIRP)
-- **Cortex 3.x** - Observable Analysis Engine with 20+ analyzers
-- **Velociraptor** - Digital Forensics and Incident Response (DFIR)
-- **Wazuh 4.12+** - Host-based Intrusion Detection System (HIDS)
-- **Kasm Workspaces** - Browser-based virtual desktop environment
-- **Portainer** - Docker container management interface
+- **Velociraptor** (latest) - Digital Forensics and Incident Response (DFIR)
+- **Wazuh 4.9.0** - Host-based Intrusion Detection System (HIDS) & SIEM
+- **Kasm Workspaces 1.17.0** - Browser-based virtual desktop environment
+- **REMnux 1.16.0-rolling-daily** - Malware analysis toolkit (via Kasm)
+- **Elasticsearch 8.15.3** - Search and analytics engine
+- **Portainer** (latest) - Docker container management interface
 
 ### 🔗 **Seamless Integration**
 - **Automated API key generation** and service interconnection
-- **TheHive-Cortex integration** for automated observable analysis
-- **Wazuh-TheHive integration** for alert-to-case workflow
+- **Wazuh integration** for security monitoring and alerting
 - **Velociraptor integration** for endpoint forensics collection
+- **Kasm Workspaces integration** for secure browser access
 
 ### 🛡️ **Production Ready**
 - **SSL/TLS encryption** with automated certificate generation
@@ -70,14 +70,12 @@ BTPI-REACT (Blue Team Portable Infrastructure - Rapid Emergency Analysis & Count
 
 2. **Run the master deployment script**:
    ```bash
-   sudo ./fresh-btpi-react.sh
+   sudo ./deployment/fresh-btpi-react.sh
    ```
 
 3. **Monitor the deployment progress** and wait for completion (30-45 minutes)
 
 4. **Access your services**:
-   - **TheHive**: `http://YOUR_SERVER_IP:9000`
-   - **Cortex**: `http://YOUR_SERVER_IP:9001`
    - **Velociraptor**: `https://YOUR_SERVER_IP:8889`
    - **Wazuh Dashboard**: `https://YOUR_SERVER_IP:5601`
    - **Kasm Workspaces**: `https://YOUR_SERVER_IP:6443`
@@ -99,14 +97,10 @@ BTPI-REACT (Blue Team Portable Infrastructure - Rapid Emergency Analysis & Count
 │  └─────────────┘  └─────────────┘  └─────────────┘         │
 ├─────────────────────────────────────────────────────────────┤
 │  Security Tools Layer                                       │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐         │
-│  │   TheHive   │  │   Cortex    │  │Velociraptor │         │
-│  │    SIRP     │  │  Analysis   │  │    DFIR     │         │
-│  └─────────────┘  └─────────────┘  └─────────────┘         │
-│  ┌─────────────┐                                           │
-│  │    Wazuh    │                                           │
-│  │    HIDS     │                                           │
-│  └─────────────┘                                           │
+│  ┌─────────────┐  ┌─────────────┐                         │
+│  │Velociraptor │  │    Wazuh    │                         │
+│  │    DFIR     │  │    HIDS     │                         │
+│  └─────────────┘  └─────────────┘                         │
 ├─────────────────────────────────────────────────────────────┤
 │  Data Layer                                                 │
 │  ┌─────────────┐  ┌─────────────┐                         │
@@ -123,11 +117,11 @@ BTPI-REACT (Blue Team Portable Infrastructure - Rapid Emergency Analysis & Count
 
 ### Integration Flow
 ```
-Wazuh Agents → Wazuh Manager → TheHive Cases
+Wazuh Agents → Wazuh Manager → Wazuh Dashboard
                     ↓
-Velociraptor Clients → Velociraptor Server → TheHive Evidence
+Velociraptor Clients → Velociraptor Server → Forensics Analysis
                     ↓
-TheHive Observables → Cortex Analyzers → Analysis Results
+Kasm Workspaces → Secure Browser Access → Investigation Tools
 ```
 
 ## Key Improvements
@@ -136,7 +130,7 @@ TheHive Observables → Cortex Analyzers → Analysis Results
 This optimized version addresses critical gaps identified in the original BTPI-REACT deployment:
 
 - **✅ Master Deployment Script**: Unified `fresh-btpi-react.sh` orchestrates entire deployment
-- **✅ Complete Tool Stack**: Added missing TheHive, Cortex, and Velociraptor deployments
+- **✅ Complete Tool Stack**: Comprehensive security tools including Velociraptor and Wazuh deployments
 - **✅ Service Integration**: Automated API key generation and service interconnection
 - **✅ Error Handling**: Comprehensive error checking, logging, and recovery mechanisms
 - **✅ Health Validation**: Service readiness checks and dependency management
@@ -152,12 +146,11 @@ This optimized version addresses critical gaps identified in the original BTPI-R
 
 ### 📚 **Available Documentation**
 - **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - Comprehensive installation and configuration guide
-- **[Architecture Overview](BTPI-REACT_Deployment_Architecture.html)** - Detailed system architecture
-- **[Integration Guide](data/THEHIVE_CORTEX_INTEGRATION.md)** - Service integration documentation
-- **[Testing Guide](tests/integration-tests.sh)** - Automated testing procedures
+- **[Architecture Overview](docs/architecture/BTPI-REACT_Deployment_Architecture.html)** - Detailed system architecture
+- **[Testing Guide](tests/integration-tests.sh)** - Service integration and testing documentation
 
 ### 🔧 **Configuration Files**
-- **Master Script**: `fresh-btpi-react.sh` - Main deployment orchestrator
+- **Master Script**: `deployment/fresh-btpi-react.sh` - Main deployment orchestrator
 - **Service Scripts**: `services/*/deploy.sh` - Individual service deployments
 - **Integration Scripts**: `services/integrations/*.sh` - Service interconnection
 - **Test Suite**: `tests/integration-tests.sh` - Comprehensive testing
@@ -186,14 +179,13 @@ This optimized version addresses critical gaps identified in the original BTPI-R
 
 | Service | Port(s) | Protocol | Description |
 |---------|---------|----------|-------------|
-| TheHive | 9000 | HTTP | Case management interface |
-| Cortex | 9001 | HTTP | Analysis engine interface |
 | Velociraptor | 8889, 8000 | HTTPS | DFIR platform |
 | Wazuh Dashboard | 5601 | HTTPS | Security monitoring |
 | Wazuh Manager | 1514, 1515, 55000 | TCP | Agent communication |
 | Kasm Workspaces | 6443 | HTTPS | Virtual desktop |
 | Portainer | 9443 | HTTPS | Container management |
 | Elasticsearch | 9200 | HTTPS | Search engine |
+| **Available** | 9000, 9001 | - | Previously used ports now free |
 
 ## Deployment Verification
 
@@ -205,9 +197,9 @@ This optimized version addresses critical gaps identified in the original BTPI-R
 
 ### Manual Verification
 1. **Service Connectivity**: Verify all services are accessible
-2. **Integration Testing**: Test TheHive-Cortex observable analysis
-3. **Agent Deployment**: Deploy Wazuh and Velociraptor agents
-4. **Functionality Testing**: Create cases, run analyses, collect forensics
+2. **Agent Deployment**: Deploy Wazuh and Velociraptor agents
+3. **Functionality Testing**: Run forensics collection and security monitoring
+4. **Dashboard Access**: Verify Wazuh dashboard and Velociraptor functionality
 
 ## Troubleshooting
 
@@ -258,12 +250,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- **TheHive Project** - Security incident response platform
-- **Cortex Project** - Observable analysis engine
 - **Velociraptor** - Digital forensics and incident response
 - **Wazuh** - Host-based intrusion detection system
 - **Kasm Technologies** - Virtual desktop infrastructure
 - **RTPI-PEN Project** - Foundational architecture inspiration
+- **Open Source Community** - For providing robust security tools
 
 ---
 

@@ -28,7 +28,9 @@ RUN mkdir /opt/btpi-nexus/
 # Install portainer
 WORKDIR "/opt"
 RUN apk add bash tar curl
-RUN curl https://raw.githubusercontent.com/cmndcntrlcyber/btpi-react/refs/heads/main/grr/install_grr.sh > /opt/btpi-nexus/install_portainer.sh
+# Copy local installation script
+COPY scripts/install_portainer.sh /opt/btpi-nexus/install_portainer.sh
+RUN chmod +x /opt/btpi-nexus/install_portainer.sh
 RUN bash /opt/btpi-nexus/install_portainer.sh
 
 #RUN docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:2.21.0
@@ -41,7 +43,9 @@ WORKDIR /tmp
 RUN apk add bash tar curl
 
 ## Automated Install
-RUN curl https://raw.githubusercontent.com/cmndcntrlcyber/btpi-react/refs/heads/main/kasm/install_kasm.sh > /opt/btpi-nexus/install_kasm.sh
+# Copy local installation script
+COPY scripts/install_kasm.sh /opt/btpi-nexus/install_kasm.sh
+RUN chmod +x /opt/btpi-nexus/install_kasm.sh
 RUN bash /opt/btpi-nexus/install_kasm.sh
 
 ## Manual Install
@@ -75,7 +79,9 @@ WORKDIR "/opt"
 RUN apk add bash tar curl
 
 ## Automated Install
-RUN curl https://github.com/cmndcntrlcyber/btpi-nexus/grr/install_grr.sh > /opt/btpi-nexus/install_grr.sh
+# Copy local installation script
+COPY scripts/install_grr.sh /opt/btpi-nexus/install_grr.sh
+RUN chmod +x /opt/btpi-nexus/install_grr.sh
 RUN bash /opt/btpi-nexus/install_grr.sh
 
 ## Manual Install
@@ -87,12 +93,14 @@ RUN bash /opt/btpi-nexus/install_grr.sh
 #-------------------------------
 
 #---------------------------------
-# Install Wazuh 
+# Install Wazuh
 WORKDIR "/opt"
 RUN apk add bash tar curl
 
 ## Automated Install
-RUN curl https://raw.githubusercontent.com/cmndcntrlcyber/btpi-react/refs/heads/main/wazuh/install_wazuh.sh > /opt/btpi-nexus/install_wazuh.sh
+# Copy local installation script
+COPY scripts/install_wazuh.sh /opt/btpi-nexus/install_wazuh.sh
+RUN chmod +x /opt/btpi-nexus/install_wazuh.sh
 RUN bash /opt/btpi-nexus/install_wazuh.sh
 
 ## Manual Install

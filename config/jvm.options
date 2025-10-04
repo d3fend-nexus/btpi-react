@@ -1,0 +1,20 @@
+# JVM configuration for Wazuh Indexer
+
+# Heap size (adjust based on available memory)
+-Xms2g
+-Xmx2g
+
+# GC settings
+-XX:+UseG1GC
+-XX:G1HeapRegionSize=16m
+-XX:MaxGCPauseMillis=200
+
+# GC logging
+-Xlog:gc*,gc+age=trace,safepoint:gc.log:utctime,pid,tid,level
+
+# Security settings
+-Djava.security.policy=all.permissions
+
+# DNS cache settings
+-Des.networkaddress.cache.ttl=60
+-Des.networkaddress.cache.negative.ttl=10

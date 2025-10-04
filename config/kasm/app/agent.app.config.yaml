@@ -1,0 +1,40 @@
+agent:
+  server:
+    host: 0.0.0.0
+    port: 4444
+  hostname: kasm-agent-01
+
+api_server:
+  host: kasm-api
+  port: 8080
+
+database:
+  type: postgresql
+  host: kasm-db
+  port: 5432
+  database: kasm
+  username: kasm
+  password: JWHytZl/OWNnLAINfy9JLP5sfbyqyIsiHWRdlhy9w/0=
+
+redis:
+  host: kasm-redis
+  port: 6379
+  password: +oDqBMwJGRfIVQoKZXB6+HMDjMKPrXlVXjeHKlGerR4=
+
+logging:
+  level: INFO
+
+api:
+  token: xnKWAdFndRGT50K8Vmm2HCU105QI3WLAJoe72U3tE3Q=
+
+manager:
+  token: May327QlrpE7QZSBBG32Kdsew1NjPCeiA6apupWSzd8=
+
+kasm_guac_token: xnKWAdFndRGT50K8Vmm2HCU105QI3WLAJoe72U3tE3Q=
+
+share_id: kasm-agent-01
+
+default_desktop_image: kasmweb/desktop:1.15.0
+
+docker:
+  host: unix:///var/run/docker.sock

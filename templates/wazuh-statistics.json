@@ -1,0 +1,28 @@
+{
+  "index_patterns": ["wazuh-statistics-*"],
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "refresh_interval": "30s"
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp": {"type": "date"},
+        "analysisd": {
+          "properties": {
+            "events_processed": {"type": "long"},
+            "events_received": {"type": "long"},
+            "events_dropped": {"type": "long"}
+          }
+        },
+        "remoted": {
+          "properties": {
+            "queue_size": {"type": "long"},
+            "total_queue_size": {"type": "long"}
+          }
+        }
+      }
+    }
+  }
+}

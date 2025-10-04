@@ -1,0 +1,19 @@
+{
+  "index_patterns": ["wazuh-monitoring-*"],
+  "template": {
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0,
+      "refresh_interval": "30s"
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp": {"type": "date"},
+        "cluster": {"type": "keyword"},
+        "node_name": {"type": "keyword"},
+        "status": {"type": "keyword"},
+        "version": {"type": "keyword"}
+      }
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "index_patterns": ["wazuh-alerts-*"],
+  "template": {
+    "settings": {
+      "index": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0,
+        "refresh_interval": "5s",
+        "mapping.total_fields.limit": 5000
+      }
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "timestamp": {
+          "type": "date",
+          "format": "yyyy-MM-dd HH:mm:ss||yyyy-MM-dd||epoch_millis"
+        },
+        "agent": {
+          "properties": {
+            "id": {"type": "keyword"},
+            "name": {"type": "keyword"},
+            "ip": {"type": "ip"},
+            "version": {"type": "keyword"},
+            "os": {
+              "properties": {
+                "family": {"type": "keyword"},
+                "name": {"type": "keyword"},
+                "platform": {"type": "keyword"},
+                "version": {"type": "keyword"}
+              }
+            }
+          }
+        },
+        "manager": {
+          "properties": {
+            "name": {"type": "keyword"}
+          }
+        },
+        "cluster": {
+          "properties": {
+            "name": {"type": "keyword"},
+            "node": {"type": "keyword"}
+          }
+        },
+        "rule": {
+          "properties": {
+            "id": {"type": "keyword"},
+            "level": {"type": "long"},
+            "description": {"type": "text"},
+            "groups": {"type": "keyword"},
+            "pci_dss": {"type": "keyword"},
+            "nist_800_53": {"type": "keyword"},
+            "tsc": {"type": "keyword"},
+            "mitre": {
+              "properties": {
+                "id": {"type": "keyword"},
+                "tactic": {"type": "keyword"},
+                "technique": {"type": "keyword"}
+              }
+            }
+          }
+        },
+        "location": {"type": "keyword"},
+        "decoder": {
+          "properties": {
+            "name": {"type": "keyword"},
+            "parent": {"type": "keyword"}
+          }
+        },
+        "data": {
+          "properties": {
+            "srcip": {"type": "ip"},
+            "dstip": {"type": "ip"},
+            "srcport": {"type": "long"},
+            "dstport": {"type": "long"},
+            "protocol": {"type": "keyword"},
+            "action": {"type": "keyword"},
+            "id": {"type": "keyword"},
+            "srcuser": {"type": "keyword"},
+            "dstuser": {"type": "keyword"}
+          }
+        },
+        "full_log": {"type": "text"},
+        "predecoder": {
+          "properties": {
+            "program_name": {"type": "keyword"},
+            "timestamp": {"type": "keyword"},
+            "hostname": {"type": "keyword"}
+          }
+        }
+      }
+    }
+  },
+  "priority": 1
+}
