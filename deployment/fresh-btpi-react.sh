@@ -1,14 +1,15 @@
 #!/bin/bash
-# BTPI-REACT Master Deployment Script
-# Version: 2.1.0
-# Purpose: Unified deployment script combining the best features of both scripts
+# BTPI-REACT Master Deployment Script with ARM64 Support
+# Version: 2.2.0
+# Purpose: Unified deployment script with platform-aware component selection
 # Author: BTPI-REACT Optimization Team
 
 set -euo pipefail
 
-# Import common utilities
+# Import common utilities and platform detection
 DEPLOYMENT_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${DEPLOYMENT_SCRIPT_DIR}/../scripts/common-utils.sh"
+source "${DEPLOYMENT_SCRIPT_DIR}/../scripts/core/common-utils.sh"
+source "${DEPLOYMENT_SCRIPT_DIR}/../scripts/core/detect-platform.sh" --source
 
 # Ensure correct paths after sourcing common-utils
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -838,7 +839,7 @@ download_with_resilience() {
     return 1
 }
 
-# Enhanced Native KASM installation function with 1.17.0 support
+# Enhanced Native KASM installation function with platform-aware ARM64/AMD64 support
 install_kasm_native() {
     log_info "🖥️ Setting up KASM Workspaces (Native)..." "KASM"
     log_info "-------------------------------------" "KASM"
@@ -849,47 +850,86 @@ install_kasm_native() {
         return 0
     fi
 
-    log_info "📦 Starting KASM 1.17.0 installation..." "KASM"
+    # Detect architecture for KASM images - use platform detection
+    local kasm_arch="${BTPI_PLATFORM:-amd64}"  # Default to amd64 if not set
+    log_info "📦 Starting KASM 1.17.0 installation for ${kasm_arch} architecture..." "KASM"
 
     # Change to /tmp directory
     local original_dir=$(pwd)
     cd /tmp
 
-    # Download KASM files
-    log_info "Downloading KASM installation files..." "KASM"
-    curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_1.17.0.7f020d.tar.gz
-    curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_service_images_amd64_1.17.0.7f020d.tar.gz
-    curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_workspace_images_amd64_1.17.0.7f020d.tar.gz
-    curl -O https://kasm-static-content.s3.amazonaws.com/kasm_release_plugin_images_amd64_1.17.0.7f020d.tar.gz
+    # Download KASM files with platform-specific images
+    log_info "Downloading KASM installation files for ${kasm_arch}..." "KASM"
+    
+    # Main package (architecture-independent)
+    if ! curl -L -o kasm_release_1.17.0.7f020d.tar.gz \
+        "https://kasm-static-content.s3.amazonaws.com/kasm_release_1.17.0.7f020d.tar.gz"; then
+        log_error "Failed to download main KASM package" "KASM"
+        cd "$original_dir"
+        return 1
+    fi
+    
+    # Platform-specific service images
+    if ! curl -L -o "kasm_release_service_images_${kasm_arch}_1.17.0.7f020d.tar.gz" \
+        "https://kasm-static-content.s3.amazonaws.com/kasm_release_service_images_${kasm_arch}_1.17.0.7f020d.tar.gz"; then
+        log_error "Failed to download KASM service images for ${kasm_arch}" "KASM"
+        cd "$original_dir"
+        return 1
+    fi
+    
+    # Platform-specific workspace images
+    if ! curl -L -o "kasm_release_workspace_images_${kasm_arch}_1.17.0.7f020d.tar.gz" \
+        "https://kasm-static-content.s3.amazonaws.com/kasm_release_workspace_images_${kasm_arch}_1.17.0.7f020d.tar.gz"; then
+        log_error "Failed to download KASM workspace images for ${kasm_arch}" "KASM"
+        cd "$original_dir"
+        return 1
+    fi
+    
+    # Platform-specific plugin images
+    if ! curl -L -o "kasm_release_plugin_images_${kasm_arch}_1.17.0.7f020d.tar.gz" \
+        "https://kasm-static-content.s3.amazonaws.com/kasm_release_plugin_images_${kasm_arch}_1.17.0.7f020d.tar.gz"; then
+        log_error "Failed to download KASM plugin images for ${kasm_arch}" "KASM"
+        cd "$original_dir"
+        return 1
+    fi
 
     # Extract the main package
     log_info "Extracting KASM installation files..." "KASM"
-    tar -xf kasm_release_1.17.0.7f020d.tar.gz
+    if ! tar -xf kasm_release_1.17.0.7f020d.tar.gz; then
+        log_error "Failed to extract KASM installation package" "KASM"
+        cd "$original_dir"
+        return 1
+    fi
 
-    # Run the installer
-    log_info "Starting KASM installation - this may take several minutes..." "KASM"
+    # Run the installer with platform-specific image paths
+    log_info "Starting KASM installation for ${kasm_arch} - this may take several minutes..." "KASM"
     echo "========================================================================================="
-    echo "🚀 KASM INSTALLATION OUTPUT"
+    echo "🚀 KASM ${kasm_arch^^} INSTALLATION OUTPUT"
     echo "========================================================================================="
 
     if bash kasm_release/install.sh \
-        --offline-workspaces /tmp/kasm_release_workspace_images_amd64_1.17.0.7f020d.tar.gz \
-        --offline-service /tmp/kasm_release_service_images_amd64_1.17.0.7f020d.tar.gz \
-        --offline-network-plugin /tmp/kasm_release_plugin_images_amd64_1.17.0.7f020d.tar.gz; then
+        --offline-workspaces "/tmp/kasm_release_workspace_images_${kasm_arch}_1.17.0.7f020d.tar.gz" \
+        --offline-service "/tmp/kasm_release_service_images_${kasm_arch}_1.17.0.7f020d.tar.gz" \
+        --offline-network-plugin "/tmp/kasm_release_plugin_images_${kasm_arch}_1.17.0.7f020d.tar.gz"; then
 
         echo "========================================================================================="
-        log_success "✅ KASM installation completed successfully!" "KASM"
+        log_success "✅ KASM ${kasm_arch^^} installation completed successfully!" "KASM"
 
         # Clean up installation files
         log_info "Cleaning up installation files..." "KASM"
-        rm -f /tmp/kasm_release_*.tar.gz
-        rm -rf /tmp/kasm_release
+        rm -f /tmp/kasm_release_*.tar.gz 2>/dev/null || true
+        rm -rf /tmp/kasm_release 2>/dev/null || true
 
         cd "$original_dir"
         return 0
     else
         echo "========================================================================================="
-        log_error "❌ KASM installation failed" "KASM"
+        log_error "❌ KASM ${kasm_arch^^} installation failed" "KASM"
+        
+        # Show some diagnostic information
+        log_error "Installation files present:" "KASM"
+        ls -la /tmp/kasm_release* 2>/dev/null || log_error "No installation files found" "KASM"
+        
         cd "$original_dir"
         return 1
     fi
@@ -1470,6 +1510,27 @@ main() {
     if [[ "$DEFAULT_MODE" == "custom" ]]; then
         log_info "Custom services: $DEFAULT_SERVICES"
     fi
+
+    # Initialize platform detection
+    log_info "=== Initializing platform detection ==="
+    detect_architecture
+    validate_platform_support
+    local validation_result=$?
+    
+    if [ $validation_result -eq 1 ]; then
+        log_error "Platform not supported for BTPI-REACT deployment"
+        exit 1
+    elif [ $validation_result -eq 2 ]; then
+        log_warn "Platform has warnings - some components may have limited functionality"
+        read -p "Continue anyway? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
+    fi
+
+    log_info "Platform: $BTPI_PLATFORM ($BTPI_ARCH)"
+    generate_platform_config "$CONFIG_DIR/platform.env"
 
     # Backup existing deployment if present
     backup_existing_deployment
