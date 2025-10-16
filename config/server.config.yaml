@@ -1,0 +1,107 @@
+version:
+  name: velociraptor
+  version: "0.7.0"
+  commit: "unknown"
+  build_time: "2025-09-06T05:55:42Z"
+
+Client:
+  server_urls:
+    - https://192.168.1.184:8000/ # IP-OK
+
+API:
+  bind_address: 0.0.0.0
+  bind_port: 8001
+  bind_scheme: https
+  pinned_gw_name: GRPC_GW
+
+GUI:
+  bind_address: 0.0.0.0
+  bind_port: 8889
+  gw_certificate: /opt/velociraptor/server.cert
+  gw_private_key: /opt/velociraptor/server.key
+  internal_cidr:
+    - 127.0.0.1/12
+    - 192.168.0.0/16 # IP-OK
+    - 10.0.0.0/8 # IP-OK
+    - 172.16.0.0/12 # IP-OK
+
+CA:
+  private_key: |
+    -----BEGIN PRIVATE KEY-----
+    MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCJDKbmbZZBDwjq
+    nhjFpuZAatsOHdeTxwhJSq/Lmrt7ijL50OJuYJVhFt5Dha/5qEBRJg/XK9XpqjeN
+    h31XRX+weHteoU4pAfuT2jYZ5Fji0RWMWmNQXRmJ4qZeash20gPH1cL3q6qlg9o4
+    Ct1TjBkvpMU2LAb+CO4Ka0T3pqXAE6L7JYAZQzSJybG1ZJ6syV2RaSfPY6An0Tpl
+    Xw/ySoT0NfZC1wvqWx+V4qmGakhG2urb3d4o1pWmNlaMBJP8H6U8e2XkhzcM0gYf
+    Y8KPI44vXTeub9P6/7SUiRrJeozT9CdnxLthwV1BauborlHv/cGJsq3Wr8ERRcLi
+    nilcv1m5AgMBAAECggEAAOVjo5nM6J6JTeV214yWQ8HXGO4SkdFr3PThAxVJ2U1o
+    FvdvOMPYC8lR6lIepybdKHTNNbqVnjQUuuLvntWDM3i/7HqtEBtCTcnpmBd+aAzF
+    kHQ3Z1TZstIvXplZSLQybz9j2pqc1tK3QzaGPR0xqDIdGr6xf3GWhQsi4wruIfw2
+    kQBe2YqwznREM6hjZWLWEx0P5RgxnJH4uBS211Lo3N4dIEbYwdo3YFak25jCDOhd
+    gTX5vshPnH6wJV0mZoJOIc97wSXxjsctVD8lfBnqh5IB5eFmBjQb97+qSV6rY6HI
+    22GEIC+fVULji3ybCZUVVCFH0Bnc2Jnpej7Ra3Vl4QKBgQC5seUtaRC26t2ofVbK
+    8BFoXaW8O3qjUnsiECY4UBiFbSIjiiocwMK0Svdwz+7F5uxMUMMvUYbMYSqcvArR
+    4fbbwbDj3p4ldPlX2B4+KcwGjCdA4bo9/UX9nJA3Ai/jB1Oqy87u2fsQlRK8pLvO
+    fuFHSjRtcC0TYndujdpDBlnIIQKBgQC87+Qub5v3MukJB78hpPNtUEeCmvYz0yF/
+    GMun+DeIUjj7oxbUtMfp6cb0M5KqvNhkVjE/cBCGiWD/ITcukV22BLtS6R6mpcp3
+    oL+e+8mxar16eor5sDyfOvxeY1cso4iM//LY+xesy/7xaxCQvf60CvZd9w1G/6uT
+    aW86U8b+mQKBgGHtJ5+v9YmRCD2vg5LX0UZJhHpkn4L7n0XSYGV4D8ZlTAiT9ytc
+    mBE+K4lJjnC9G8YPHS+Z/c1QPImVPNt8H5O6bE9u+dVk/41Mwn4jyp11UcoMgAvq
+    wftBkmf/9kLyfTPn8QPS3mzbQJtNAGGgVasjvcwsyQic98DMe9q2waghAoGBAJGf
+    E+/2de+BfbtIDTiROk32oic36Kro/9hF9DHyTlrzhJfui5pF/A9976ooVdLi2qX7
+    CNosNZB8MhZyM2XhBKlV3Et7AfTPs82gSBDxX/MuofvUl2j7PL49aGYXiwkMwiJq
+    43H5lbXJRSYtrwbgaX+7M0gZMlKWnFdx3BjImYeBAoGAZk9nPym/XwGt5PWM2Gkz
+    0i9b76HO4mqFlj2pTIeKw34vJfvBU7muxq0nPDFwTaYFjPHJGEPESOAEj2e2brBS
+    pDSJedLfcUS1uo5t6dBpnxH0/Nb1DzfJHIm0iXRTfSEGlBrwRkCgTflvLrMHsWbB
+    c/PvZ2WFs9BFSSV2PtMY4RY=
+    -----END PRIVATE KEY-----
+
+Frontend:
+  bind_address: 0.0.0.0
+  bind_port: 8000
+  certificate: /opt/velociraptor/server.cert
+  private_key: /opt/velociraptor/server.key
+  dyn_dns:
+    hostname: 192.168.1.184 # IP-OK
+  expected_clients: 10000
+  resources:
+    connections: 2
+    expected_clients: 10000
+
+Datastore:
+  implementation: FileBaseDataStore
+  location: /opt/velociraptor/datastore
+  filestore_directory: /opt/velociraptor/filestore
+
+Logging:
+  output_directory: /opt/velociraptor/logs
+  separate_logs_per_component: true
+  debug:
+    enabled: false
+
+Monitoring:
+  bind_address: 127.0.0.1
+  bind_port: 8003
+
+api_config:
+  hostname: localhost
+
+defaults:
+  hunt_expiry_hours: 168
+  notebook_cell_timeout_min: 10
+
+autocert_domain: ""
+
+Services:
+  hunt_manager: true
+  hunt_dispatcher: true
+  stats_collector: true
+  server_monitoring: true
+  server_artifacts: true
+  dyn_dns: true
+  journal_service: true
+  notification_service: true
+  repository_manager: true
+  launcher: true
+  interrogation_service: true
+  sanity_service: true

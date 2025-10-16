@@ -1,0 +1,60 @@
+## JVM configuration for BTPI-REACT Elasticsearch
+
+# Heap size (adjust based on system memory)
+-Xms2g
+-Xmx2g
+
+# GC configuration
+-XX:+UseG1GC
+-XX:G1HeapRegionSize=16m
+-XX:+UseLargePages
+-XX:+UnlockExperimentalVMOptions
+# Removed deprecated option: -XX:+UseCGroupMemoryLimitForHeap
+
+# GC logging
+-Xlog:gc*,gc+age=trace,safepoint:gc.log:utctime,pid,tid,level
+-Xlog:gc+heap=debug:gc.log:utctime,pid,tid,level
+
+# Heap dumps
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=/usr/share/elasticsearch/data
+
+# File encoding
+-Dfile.encoding=UTF-8
+
+# Use server VM
+-server
+
+# Disable explicit GC
+-XX:+DisableExplicitGC
+
+# Ensure UTF-8 encoding by default
+-Dfile.encoding=UTF-8
+
+# Use our provided JNA always versus the system one
+-Djna.nosys=true
+
+# Turn off a JDK optimization that throws away stack traces for common
+# exceptions because stack traces are important for debugging
+-XX:-OmitStackTraceInFastThrow
+
+# Enable G1GC
+-XX:+UseG1GC
+
+# Set the G1GC max GC pause target to a reasonable value
+-XX:MaxGCPauseMillis=400
+
+# Various workarounds for bugs in Java
+-XX:+UnlockDiagnosticVMOptions
+-XX:+LogVMOutput
+-XX:LogFile=/usr/share/elasticsearch/logs/jvm.log
+
+# Netty settings
+-Dio.netty.noUnsafe=true
+-Dio.netty.noKeySetOptimization=true
+-Dio.netty.recycler.maxCapacityPerThread=0
+-Dlog4j.shutdownHookEnabled=false
+-Dlog4j2.disable.jmx=true
+
+# Security manager
+-Djava.security.policy=/usr/share/elasticsearch/config/java.policy

@@ -1,0 +1,30 @@
+# OpenSearch configuration for Wazuh Indexer
+cluster.name: wazuh-cluster
+node.name: wazuh-indexer
+path.data: /var/lib/wazuh-indexer
+path.logs: /var/log/wazuh-indexer
+
+# Network settings
+network.host: 0.0.0.0
+http.port: 9200
+transport.port: 9300
+
+# Discovery settings (single node)
+discovery.type: single-node
+cluster.initial_master_nodes: ["wazuh-indexer"]
+
+# Security settings
+plugins.security.disabled: true
+plugins.security.ssl.transport.enabled: false
+plugins.security.ssl.http.enabled: false
+
+# Performance settings
+bootstrap.memory_lock: false
+indices.query.bool.max_clause_count: 8192
+
+# Compatibility settings
+compatibility.override_main_response_version: true
+action.destructive_requires_name: false
+
+# Logging
+logger.org.opensearch.deprecation: warn

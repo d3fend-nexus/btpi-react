@@ -1,0 +1,50 @@
+## JVM configuration for Wazuh Indexer
+
+# Heap size (adjust based on system memory)
+-Xms1g
+-Xmx1g
+
+# GC configuration
+-XX:+UseG1GC
+-XX:G1HeapRegionSize=16m
+-XX:+UseLargePages
+-XX:+UnlockExperimentalVMOptions
+
+# GC logging
+-Xlog:gc*,gc+age=trace,safepoint:gc.log:utctime,pid,tid,level
+
+# Heap dumps
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=/var/lib/wazuh-indexer
+
+# File encoding
+-Dfile.encoding=UTF-8
+
+# Use server VM
+-server
+
+# Disable explicit GC
+-XX:+DisableExplicitGC
+
+# Use our provided JNA always versus the system one
+-Djna.nosys=true
+
+# Turn off a JDK optimization that throws away stack traces
+-XX:-OmitStackTraceInFastThrow
+
+# Enable G1GC
+-XX:+UseG1GC
+
+# Set the G1GC max GC pause target
+-XX:MaxGCPauseMillis=400
+
+# Netty settings
+-Dio.netty.noUnsafe=true
+-Dio.netty.noKeySetOptimization=true
+-Dio.netty.recycler.maxCapacityPerThread=0
+
+# Disable log4j2 JMX
+-Dlog4j2.disable.jmx=true
+
+# Security manager
+-Djava.security.policy=/usr/share/wazuh-indexer/plugins/opensearch-security/securityconfig/java.policy

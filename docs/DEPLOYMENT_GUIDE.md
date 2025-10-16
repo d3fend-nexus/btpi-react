@@ -9,14 +9,12 @@ BTPI-REACT (Blue Team Portable Infrastructure - Rapid Emergency Analysis & Count
 The BTPI-REACT platform consists of the following integrated components:
 
 ### Core Security Tools
-- **TheHive 5.x** - Security Incident Response Platform (SIRP)
-- **Cortex 3.x** - Observable Analysis Engine with comprehensive analyzers
 - **Velociraptor** - Digital Forensics and Incident Response (DFIR) platform
 - **Wazuh 4.12+** - Host-based Intrusion Detection System (HIDS)
 
 ### Infrastructure Components
 - **Elasticsearch** - Search and analytics engine
-- **Cassandra** - NoSQL database for TheHive and Cortex
+- **Cassandra** - NoSQL database
 - **Kasm Workspaces** - Browser-based virtual desktop environment
 - **Portainer** - Docker container management interface
 - **Nginx** - Reverse proxy and load balancer
@@ -89,8 +87,6 @@ sudo ufw allow 1514/tcp  # Wazuh agents
 sudo ufw allow 1515/tcp  # Wazuh enrollment
 sudo ufw allow 6443/tcp  # Kasm
 sudo ufw allow 8889/tcp  # Velociraptor
-sudo ufw allow 9000/tcp  # TheHive
-sudo ufw allow 9001/tcp  # Cortex
 sudo ufw allow 9443/tcp  # Portainer
 sudo ufw allow 55000/tcp # Wazuh API
 ```
@@ -106,10 +102,24 @@ cd btpi-react
 ### 2. Run Master Deployment Script
 ```bash
 # Make the script executable (if not already)
-chmod +x fresh-btpi-react.sh
+chmod +x deployment/fresh-btpi-react.sh
 
-# Run the deployment (requires root privileges)
-sudo ./fresh-btpi-react.sh
+# Full deployment (recommended)
+sudo ./deployment/fresh-btpi-react.sh
+
+# Simple deployment (no system optimizations)
+sudo ./deployment/fresh-btpi-react.sh --mode simple
+
+# Custom deployment (specific services)
+sudo ./deployment/fresh-btpi-react.sh --mode custom --services velociraptor,wazuh-manager
+
+# Available options:
+# --mode full|simple|custom
+# --services LIST (comma-separated for custom mode)
+# --skip-checks (skip system requirements checks)
+# --skip-optimization (skip system optimizations)
+# --debug (enable debug logging)
+# --help (show help message)
 ```
 
 ### 3. Monitor Deployment Progress
@@ -125,7 +135,7 @@ The deployment process consists of several phases:
 1. **Pre-deployment Checks** - System validation and requirements verification
 2. **System Preparation** - Package installation and system optimization
 3. **Infrastructure Deployment** - Database and core services
-4. **Security Services Deployment** - TheHive, Cortex, Velociraptor, Wazuh
+4. **Security Services Deployment** - Velociraptor, Wazuh
 5. **Integration Configuration** - Service interconnection and API setup
 6. **Testing and Validation** - Comprehensive integration testing
 
@@ -136,8 +146,6 @@ After successful deployment, access your services at:
 
 - **Kasm Workspaces**: `https://YOUR_SERVER_IP:6443`
 - **Portainer**: `https://YOUR_SERVER_IP:9443`
-- **TheHive**: `http://YOUR_SERVER_IP:9000`
-- **Cortex**: `http://YOUR_SERVER_IP:9001`
 - **Velociraptor**: `https://YOUR_SERVER_IP:8889`
 - **Wazuh Dashboard**: `https://YOUR_SERVER_IP:5601`
 
@@ -150,22 +158,6 @@ config/.env
 **IMPORTANT**: Change all default passwords immediately after first login.
 
 ### 3. Service Configuration
-
-#### TheHive Configuration
-1. Access TheHive at `http://YOUR_SERVER_IP:9000`
-2. Login with generated credentials
-3. Complete initial setup wizard
-4. Configure user accounts and permissions
-5. Import case templates and custom fields
-
-#### Cortex Configuration
-1. Access Cortex at `http://YOUR_SERVER_IP:9001`
-2. Login with generated credentials
-3. Configure analyzers with external API keys:
-   - VirusTotal: https://www.virustotal.com/gui/join-us
-   - Shodan: https://www.shodan.io/
-   - URLVoid: https://www.urlvoid.com/api/
-4. Test analyzer functionality
 
 #### Velociraptor Configuration
 1. Access Velociraptor at `https://YOUR_SERVER_IP:8889`
@@ -190,17 +182,12 @@ config/.env
 ```
 
 ### Manual Verification
-1. **TheHive-Cortex Integration**:
-   - Create a case in TheHive
-   - Add observables (IP, domain, hash)
-   - Run analyzers and verify results
-
-2. **Wazuh Integration**:
+1. **Wazuh Integration**:
    - Deploy Wazuh agents to endpoints
    - Verify log collection and alerting
    - Check dashboard functionality
 
-3. **Velociraptor Integration**:
+2. **Velociraptor Integration**:
    - Deploy clients to endpoints
    - Run artifact collection
    - Verify data collection and analysis
@@ -250,8 +237,6 @@ tar -czf btpi-logs-backup-$(date +%Y%m%d).tar.gz logs/
 
 #### Log Locations
 - **Deployment logs**: `logs/deployment.log`
-- **TheHive logs**: `logs/thehive/`
-- **Cortex logs**: `logs/cortex/`
 - **Velociraptor logs**: `logs/velociraptor/`
 - **Wazuh logs**: `logs/wazuh/`
 
@@ -313,14 +298,10 @@ netstat -tlnp
 #### Service Status
 ```bash
 # Check individual services
-docker logs thehive
-docker logs cortex
 docker logs velociraptor
 docker logs wazuh-manager
 
 # Check service health
-curl -s http://localhost:9000/api/status
-curl -s http://localhost:9001/api/status
 curl -s -k https://localhost:8889/
 ```
 
@@ -376,7 +357,6 @@ For production environments, consider:
 - Monitor and tune system parameters
 
 ### Custom Integrations
-- Develop custom analyzers for Cortex
 - Create custom artifacts for Velociraptor
 - Implement webhook integrations
 - Extend functionality with custom scripts

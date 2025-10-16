@@ -1,0 +1,56 @@
+{
+  "friendly_name": "REMnux Security Analysis Desktop",
+  "name": "kasmweb/remnux-focal-desktop:1.16.0-rolling-daily",
+  "description": "REMnux is a Linux toolkit for reverse-engineering and analyzing malicious software. It provides a curated collection of tools for examining suspicious files and artifacts.",
+  "image_src": "remnux.png",
+  "image_type": "Container",
+  "architecture": "amd64",
+  "compatibility": ["1.15.0", "1.16.0"],
+  "uncompressed_size_mb": 2500,
+  "docker_registry": "https://index.docker.io/v1/",
+  "docker_token": "",
+  "categories": ["Security Analysis", "Malware Analysis", "Digital Forensics"],
+  "docker_user": "",
+  "docker_password": "",
+  "run_config": {
+    "hostname": "remnux-desktop",
+    "user": "btpi-nexus",
+    "password": "D3m0N0d3!()!@#",
+    "ports": {
+      "6901/tcp": 6901
+    },
+    "environment": {
+      "VNC_PW": "D3m0N0d3!()!@#",
+      "USER": "btpi-nexus",
+      "PASSWORD": "D3m0N0d3!()!@#",
+      "KASM_VNC_HTTP": "1",
+      "KASM_PORT": "6901",
+      "START_DESKTOP": "true"
+    },
+    "volumes": {
+      "/home/kasm-user/Desktop/shared": {
+        "bind": "/tmp/remnux-shared",
+        "mode": "rw"
+      }
+    },
+    "shm_size": "512m",
+    "labels": {
+      "com.kasmweb.image": "true",
+      "com.kasmweb.desktop": "true",
+      "maintainer": "BTPI-REACT Team"
+    }
+  },
+  "exec_config": {
+    "first_launch": {
+      "user": "btpi-nexus",
+      "privileged": false,
+      "cmd": "bash"
+    },
+    "vnc": {
+      "user": "btpi-nexus",
+      "privileged": false,
+      "cmd": "bash"
+    }
+  },
+  "notes": "REMnux Desktop with custom BTPI-REACT configuration. Default credentials: btpi-nexus/D3m0N0d3!()!@#. Access via VNC on port 6901."
+}

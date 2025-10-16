@@ -1,0 +1,36 @@
+{
+  "index_patterns": ["wazuh-monitoring-*"],
+  "template": {
+    "settings": {
+      "index": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0,
+        "refresh_interval": "30s"
+      }
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "cluster_info": {
+          "properties": {
+            "manager_name": {"type": "keyword"},
+            "node_name": {"type": "keyword"},
+            "cluster_name": {"type": "keyword"}
+          }
+        },
+        "status": {"type": "keyword"},
+        "shards": {
+          "properties": {
+            "total": {"type": "long"},
+            "successful": {"type": "long"},
+            "skipped": {"type": "long"},
+            "failed": {"type": "long"}
+          }
+        }
+      }
+    }
+  },
+  "priority": 1
+}

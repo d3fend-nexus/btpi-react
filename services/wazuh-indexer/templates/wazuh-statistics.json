@@ -1,0 +1,33 @@
+{
+  "index_patterns": ["wazuh-statistics-*"],
+  "template": {
+    "settings": {
+      "index": {
+        "number_of_shards": 1,
+        "number_of_replicas": 0,
+        "refresh_interval": "30s"
+      }
+    },
+    "mappings": {
+      "properties": {
+        "@timestamp": {
+          "type": "date"
+        },
+        "cluster_info": {
+          "properties": {
+            "manager_name": {"type": "keyword"},
+            "node_name": {"type": "keyword"}
+          }
+        },
+        "hour": {"type": "long"},
+        "totalAlerts": {"type": "long"},
+        "events": {"type": "long"},
+        "syscheck": {"type": "long"},
+        "rootcheck": {"type": "long"},
+        "hostinfo": {"type": "long"},
+        "winevt": {"type": "long"}
+      }
+    }
+  },
+  "priority": 1
+}
